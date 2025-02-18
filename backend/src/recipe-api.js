@@ -1,6 +1,7 @@
-const API_KEY = process.env.API_KEY;
+// const API_KEY = process.env.API_KEY;
+const API_KEY = "5638f984796944ab965a6115641bd14a"
 
-export const searchRecipes = async (searchTerm ,page) => {
+export const searchRecipes = async (searchTerm, page) => {
   if (!API_KEY) {
     throw new Error("API key not found");
   }
@@ -12,7 +13,7 @@ export const searchRecipes = async (searchTerm ,page) => {
     apiKey: API_KEY,
     query: searchTerm,
     number: 10,
-    offset: (page - 1) * 10,
+    page: page
   };
 
   url.search = new URLSearchParams(queryParams).toString();

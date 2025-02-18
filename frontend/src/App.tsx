@@ -1,15 +1,23 @@
 import "./App.css";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import * as api from "./api.ts";
+import { Recipe } from "./types.ts";
 
 const App = () => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [recipes, setRecipes] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("burgers");
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
 
-  const handleSearchSubmit = async () => { 
+  const handleSearchSubmit = async (event: FormEvent) => { 
+    event.preventDefault();
     try {
-      const recipes = await api.searchRecipes(searchTerm, 1);
-      setRecipes(recipes);
+      const response = await fetch(
+        `http://localhost:5001/api/recipes/search?searchTerm=${searchTerm}`
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const data = await response.json();
+      setRecipes(data.results);
     } catch (error) {
       console.error(error);
     }
@@ -18,8 +26,24 @@ const App = () => {
 
   return (
     <div>
-      <h1>React App</h1>
+      <form onSubmit={handleSearchSubmit}>
+        <input
+          type="text"
+          required
+          placeholder="Enter a search term"
+          value={searchTerm}
+          onChange={(event) => setSearchTerm(event.target.value)}
+        />
+        <button type="submit">Submit</button>
+      </form>
+   {recipes.map((recipe) => (
+      <div key={recipe.id}>
+        recipe image: {recipe.image}
+        recipe title: {recipe.title}
+      </div>
+    ))}
     </div>
+
   );
 }
 
