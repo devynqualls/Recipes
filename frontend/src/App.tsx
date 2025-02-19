@@ -79,7 +79,7 @@ const App = () => {
   };
 
   const isFavorite = (recipe: Recipe) => {
-    return favoriteRecipes.some((favRecipe) => favRecipe.id === recipe.id);
+    return favoriteRecipes.some((favRecipe) => recipe.id !== favRecipe.id);
   };
 
   return (
@@ -101,7 +101,7 @@ const App = () => {
             <button type="submit">Submit</button>
           </form>
           {recipes.map((recipe) => (
-            <RecipeCard recipe={recipe} onClick={() => setSelectedRecipe(recipe)} onFavoriteClick={handleFavoriteIconClick} isFavorite={isFavorite(recipe)} />
+            <RecipeCard recipe={recipe} onClick={() => setSelectedRecipe(recipe)} onFavoriteClick={isFavorite(recipe) ? removeFavoriteRecipe : handleFavoriteIconClick} isFavorite={isFavorite(recipe)} />
           ))}
           <button className="view-more-button" onClick={handleViewMoreClick}>View More</button>
         </>
