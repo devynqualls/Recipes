@@ -1,50 +1,83 @@
-# React + TypeScript + Vite
+# Recipes Project
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project is a full-stack application for managing and searching recipes. It consists of a frontend built with [React](https://reactjs.org/) and a backend built with [Express](https://expressjs.com/) and [Prisma](https://www.prisma.io/).
 
-Currently, two official plugins are available:
+## Prerequisites
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Before you begin, ensure you have the following installed on your machine:
 
-## Expanding the ESLint configuration
+- [Node.js](https://nodejs.org/) (v14 or higher)
+- [npm](https://www.npmjs.com/) (v6 or higher)
+- [PostgreSQL](https://www.postgresql.org/)
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Getting Started
 
-- Configure the top-level `parserOptions` property like this:
+### Backend Setup
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+1. **Clone the repository**:
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+    ```sh
+    git clone https://github.com/your-username/recipes.git
+    cd recipes/backend
+    ```
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+2. **Install dependencies**:
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+    ```sh
+    npm install
+    ```
+
+3. **Set up environment variables**:
+
+    Create a `.env` file in the [backend](http://_vscodecontentref_/1) directory and add the following:
+
+    ```properties
+    DATABASE_URL=postgresql://<username>:<password>@<host>:<port>/<database>
+    API_KEY=your_api_key_here
+    ```
+
+4. **Run database migrations**:
+
+    ```sh
+    npx prisma migrate dev
+    ```
+
+5. **Start the backend server**:
+
+    ```sh
+    npm run start
+    ```
+
+    The backend server will run on `http://localhost:5001`.
+
+### Frontend Setup
+
+1. **Navigate to the frontend directory**:
+
+    ```sh
+    cd ../frontend
+    ```
+
+2. **Install dependencies**:
+
+    ```sh
+    npm install
+    ```
+
+3. **Start the frontend server**:
+
+    ```sh
+    npm run dev
+    ```
+
+    The frontend server will run on `http://localhost:3000`.
+
+## API Endpoints
+
+### Recipes
+
+- `GET /api/recipes/search`: Search for recipes.
+- `GET /api/recipes/:recipeId/summary`: Get a summary of a specific recipe.
+- `GET /api/recipes/favorite`: Get a list of favorite recipes.
+- `POST /api/recipes/favorite`: Add a recipe to favorites.
+- `DELETE /api/recipes/favorite`: Remove a recipe from favorites.
