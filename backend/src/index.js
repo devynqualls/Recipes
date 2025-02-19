@@ -27,20 +27,46 @@ app.get("/api/recipes/:recipeId/summary", async (req, res) => {
   return res.json(recipe);
 });
 
-app.post("/api/recipes/:recipeId/favourite", async (req, res) => {
-  const recipeId = req.body.recipeId;
-
+app.get("/api/recipes/favorite", async (req, res) => {
   try {
-    const favouriteRecipe = await prismaClient.favouriteRecipes.create({
-      data: {
-        recipeId: recipeId
-      }
-    });
-    return res.status(201)
+    const favoriteRecipes = await prismaClient.favouriteRecipes.findMany();
+    const recipeIds = favoriteRecipes.map((recipe) =>
+      recipe.recipeId.toString()
+    );
+    const favorites = await RecipeAPI.getFavoriteRecipesByIds(recipeIds);
+    res.json(favorites);
   } catch (error) {
-    return res.status(500).json({ error: "Unable to save recipe as favourite" });
+    console.error(error);
+    res.status(500).json({ error: "Oops, something went wrong." });
   }
-})
+});
+
+app.post("/api/recipes/favorite", async (req, res) => {
+  const { recipeId } = req.body;
+  try {
+    const favoriteRecipe = await prismaClient.favouriteRecipes.create({
+      data: { recipeId: recipeId },
+    });
+    res.status(201).json(favoriteRecipe);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Oops, something went wrong." });
+  }
+});
+
+// delete favorite recipe
+app.delete("/api/recipes/favorite", async (req, res) => {
+  const recipeId = req.body.recipeId
+  try {
+    await prismaClient.favouriteRecipes.delete({
+      where: { recipeId },
+    });
+    res.status(204).end();
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Oops, something went wrong." });
+  }
+});
 
 app.listen(5001, () => {
   console.log("Server running on localhost:5001");
